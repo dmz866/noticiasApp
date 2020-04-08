@@ -12,9 +12,27 @@ export class Tab1Page implements OnInit {
   constructor(private noticiasService: NoticiasService) {}
 
   ngOnInit() {
+    this.cargarNoticias();
+  }
+
+  cargarNoticias(event?) {
     this.noticiasService.getTopHeadLines().subscribe(result => 
-      {
-        this.noticias.push(...result.articles);
-      });
+    {
+      if (result.articles.length === 0) {
+        event.target.disabled = true;
+        event.target.complete();
+        return;
+      }
+
+      this.noticias.push(...result.articles);
+      
+      if (event) {
+        event.target.complete();
+      }
+    });
+  }
+
+  loadData(event) {
+    this.cargarNoticias(event);
   }
 }

@@ -25,12 +25,19 @@ export class Tab2Page implements OnInit {
     this.getNoticiasByCategoria(event.detail.value);
   }
 
-  getNoticiasByCategoria(categoria: string) {
+  loadData(event) {
+    this.getNoticiasByCategoria(this.segment.value, event);
+  }
+
+  getNoticiasByCategoria(categoria: string, event?) {
     this.noticiasService.getTopHeadLinesByCategory(categoria).subscribe(result => 
     {
-      if (result) {
-        this.noticias.push(...result.articles);
+      if (event) {
+        event.target.complete();
+        return;
       }
+
+      this.noticias.push(...result.articles);
     });
   }
 }
