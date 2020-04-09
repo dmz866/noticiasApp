@@ -9,14 +9,26 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, ComponentsModule],
+  imports: [
+    BrowserModule, 
+    IonicStorageModule.forRoot(),
+    IonicModule.forRoot(), 
+    AppRoutingModule, 
+    HttpClientModule, 
+    ComponentsModule
+  ],
   providers: [
     StatusBar,
-    SplashScreen,
+    SocialSharing,
+    InAppBrowser,
+    SplashScreen,    
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
