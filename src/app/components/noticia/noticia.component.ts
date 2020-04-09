@@ -10,20 +10,43 @@ import { DataLocalService } from 'src/app/services/data-local.service';
   templateUrl: './noticia.component.html',
   styleUrls: ['./noticia.component.scss'],
 })
-export class NoticiaComponent implements OnInit {
+export class NoticiaComponent {
   @Input() noticiaIndex: number;
   @Input() noticia: Article;
+  @Input() enFavoritos: boolean = false;
   
   constructor(private iab: InAppBrowser, private actionSheetCtrl: ActionSheetController,
-              private socialSharing: SocialSharing, private dataLocalService: DataLocalService) { }
-
-  ngOnInit() {}
+              private socialSharing: SocialSharing, private dataLocalService: DataLocalService) 
+              { }
 
   abrirNoticia() {
     const browser = this.iab.create(this.noticia.url, '_system');
   }
 
   async lanzarMenu() {
+    let guardarBorrarBtn;
+
+    if (this.enFavoritos) {
+      guardarBorrarBtn = {
+                          text: 'Borrar Favorito',
+                          icon: 'trash',
+                          cssClass: 'action-dark',
+                          handler: () => {
+                            this.dataLocalService.borrarNoticia(this.noticia);
+                          }
+                        };
+    }
+    else {
+      guardarBorrarBtn = {
+                            text: 'Favorito',
+                            icon: 'star',
+                            cssClass: 'action-dark',
+                            handler: () => {
+                              this.dataLocalService.guardarNoticia(this.noticia);
+                            }
+                          }
+    }
+
     const actionSheet = await this.actionSheetCtrl.create({
       buttons: [{
         text: 'Compartir',
@@ -32,14 +55,9 @@ export class NoticiaComponent implements OnInit {
         handler: () => {
           this.socialSharing.share(this.noticia.title, this.noticia.source.name, '', this.noticia.url);
         }
-      }, {
-        text: 'Favorito',
-        icon: 'star',
-        cssClass: 'action-dark',
-        handler: () => {
-          this.dataLocalService.guardarNoticia(this.noticia);
-        }
-      }, {
+      }, 
+      guardarBorrarBtn, 
+      {
         text: 'Cancelar',
         icon: 'close',
         cssClass: 'action-dark',
