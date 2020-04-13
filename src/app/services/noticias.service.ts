@@ -4,7 +4,7 @@ import { RespuestaTopHeadLines } from '../interfaces/interfaces';
 import { environment } from '../../environments/environment';
 
 const apiKey = environment.apiKey;
-const NEWS_API_URL = 'http://newsapi.org/v2/';
+const NEWS_API_URL = 'https://newsapi.org/v2/';
 const headers = new HttpHeaders({ 'X-Api-key': apiKey});
 
 @Injectable({

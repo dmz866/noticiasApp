@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Article } from 'src/app/interfaces/interfaces';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, Platform } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { DataLocalService } from 'src/app/services/data-local.service';
 
@@ -16,7 +16,8 @@ export class NoticiaComponent {
   @Input() enFavoritos: boolean = false;
   
   constructor(private iab: InAppBrowser, private actionSheetCtrl: ActionSheetController,
-              private socialSharing: SocialSharing, private dataLocalService: DataLocalService) 
+              private socialSharing: SocialSharing, private dataLocalService: DataLocalService,
+              private platform: Platform) 
               { }
 
   abrirNoticia() {
@@ -53,7 +54,7 @@ export class NoticiaComponent {
         icon: 'share',
         cssClass: 'action-dark',
         handler: () => {
-          this.socialSharing.share(this.noticia.title, this.noticia.source.name, '', this.noticia.url);
+          this.compartirNoticia();
         }
       }, 
       guardarBorrarBtn, 
@@ -68,5 +69,24 @@ export class NoticiaComponent {
       }]
     });
     await actionSheet.present();
+  }
+
+  compartirNoticia() 
+  {
+    if (this.platform.is('cordova'))
+    {
+      this.socialSharing.share(this.noticia.title, this.noticia.source.name, '', this.noticia.url);
+    }    
+    else
+    {
+      if (navigator['share']) 
+      {
+        navigator['share']({
+          title: this.noticia.title,
+          text: this.noticia.description,
+          url: this.noticia.url
+        });
+      }
+    }
   }
 }
